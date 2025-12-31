@@ -19,7 +19,7 @@ function Dashboard() {
 
   return (
     <div className="shell">
-      {/* Topbar no estilo do site (marca + menu + CTA) */}
+      {/* Topbar */}
       <header className="topbar">
         <div className="topbar-inner">
           <div className="brand">
@@ -33,14 +33,14 @@ function Dashboard() {
           </div>
 
           <nav className="nav">
-            {/* Mantém a mesma ideia de navegação do site institucional */}
             <a href="/dashboard">Home</a>
-
-            {/* ✅ Agora Jornada abre a página /jornada */}
             <a href="/jornada">Jornada</a>
+            <a href="/meus-cursos">Cursos</a>
+            <a href="/provas">Provas</a>
+            <a href="/avisos">Avisos</a>
 
-            <a href="#cursos">Cursos</a>
-            <a href="#provas">Provas</a>
+            {/* ✅ Perfil */}
+            <a href="/perfil">Perfil</a>
 
             <button className="btn btn-ghost" onClick={logout}>
               Sair
@@ -58,20 +58,19 @@ function Dashboard() {
 
       <main className="main">
         <div className="main-inner">
-          {/* Sidebar (portal do aluno) */}
+          {/* Sidebar */}
           <aside className="sidebar">
             <div className="side-title">Meu Portal</div>
 
-            {/* ✅ Agora Jornada abre a página /jornada */}
             <a className="side-item" href="/jornada">
               <span className="dot" /> Jornada
             </a>
 
-            <a className="side-item" href="#cursos">
+            <a className="side-item" href="/meus-cursos">
               <span className="dot" /> Meus cursos
             </a>
 
-            <a className="side-item" href="#provas">
+            <a className="side-item" href="/provas">
               <span className="dot" /> Provas
             </a>
 
@@ -79,7 +78,7 @@ function Dashboard() {
               <span className="dot" /> Boletos
             </a>
 
-            <a className="side-item" href="#avisos">
+            <a className="side-item" href="/avisos">
               <span className="dot" /> Avisos
             </a>
 
@@ -87,7 +86,8 @@ function Dashboard() {
               Conta
             </div>
 
-            <a className="side-item" href="#perfil">
+            {/* ✅ Perfil agora vai para /perfil */}
+            <a className="side-item" href="/perfil">
               <span className="dot" /> Perfil
             </a>
 
@@ -108,6 +108,7 @@ function Dashboard() {
                 Aqui você acompanha sua jornada, acessa aulas, faz provas e mantém
                 sua matrícula em dia.
               </p>
+
               <div
                 style={{
                   marginTop: 12,
@@ -127,7 +128,7 @@ function Dashboard() {
                 <div style={{ marginTop: 12 }}>
                   <button
                     className="btn btn-primary"
-                    onClick={() => alert("Em breve: listar cursos do backend")}
+                    onClick={() => (window.location.href = "/meus-cursos")}
                   >
                     Abrir cursos
                   </button>
@@ -140,7 +141,7 @@ function Dashboard() {
                 <div style={{ marginTop: 12 }}>
                   <button
                     className="btn btn-primary"
-                    onClick={() => alert("Em breve: provas do backend")}
+                    onClick={() => (window.location.href = "/provas")}
                   >
                     Ver provas
                   </button>
@@ -153,21 +154,16 @@ function Dashboard() {
                 <div style={{ marginTop: 12 }}>
                   <button
                     className="btn btn-primary"
-                    onClick={() =>
-                      alert("Financeiro entra após banco + cursos")
-                    }
+                    onClick={() => alert("Financeiro entra após banco + cursos")}
                   >
                     Ver boletos
                   </button>
                 </div>
               </div>
 
-              {/* Mantive esse card como resumo da Jornada dentro do Dashboard */}
               <div className="card span-8" id="jornada">
                 <h3>Jornada do Curso</h3>
-                <p>
-                  Próximo passo: mostrar módulos/aulas e marcar como concluída.
-                </p>
+                <p>Veja sua trilha, módulos e evolução.</p>
 
                 <div
                   style={{
@@ -186,6 +182,7 @@ function Dashboard() {
                   >
                     Progresso do curso
                   </div>
+
                   <div
                     style={{
                       height: 10,
@@ -218,16 +215,27 @@ function Dashboard() {
               <div className="card span-4" id="avisos">
                 <h3>Avisos</h3>
                 <p>Comunicados do Instituto e lembretes.</p>
-                <div
-                  style={{
-                    marginTop: 10,
-                    fontSize: 14,
-                    color: "#334155",
-                  }}
-                >
-                  • Bem-vindo ao portal do aluno
-                  <br />
-                  • Em breve: conteúdos reais via backend
+                <div style={{ marginTop: 12 }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => (window.location.href = "/avisos")}
+                  >
+                    Ver avisos
+                  </button>
+                </div>
+              </div>
+
+              {/* ✅ Card novo Perfil */}
+              <div className="card span-4">
+                <h3>Perfil</h3>
+                <p>Atualize seus dados e preferências.</p>
+                <div style={{ marginTop: 12 }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => (window.location.href = "/perfil")}
+                  >
+                    Abrir perfil
+                  </button>
                 </div>
               </div>
             </div>
