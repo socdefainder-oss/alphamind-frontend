@@ -1,19 +1,32 @@
-import { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
 import "../App.css";
 
 function Dashboard() {
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) window.location.href = "/";
-  }, []);
+  const { isLoading, user } = useAuth();
 
   function logout() {
     localStorage.removeItem("token");
     window.location.href = "/";
   }
 
+  // Mostra loading enquanto valida o token
+  if (isLoading) {
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        fontSize: 18,
+        color: "#64748b"
+      }}>
+        Verificando autenticação...
+      </div>
+    );
+  }
+
   // placeholders do MVP (depois a gente puxa do backend)
-  const alunoNome = "Aluno(a)";
+  const alunoNome = user?.nome || "Aluno(a)";
   const cursoAtual = "Teologia Inteligente";
   const progresso = 20;
 

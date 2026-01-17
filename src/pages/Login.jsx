@@ -24,7 +24,22 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       window.location.href = "/dashboard";
     } catch (err) {
-      setErro("Email ou senha inválidos");
+      // Tratamento mais específico de erros
+      if (err.response) {
+        if (err.response.status === 401) {
+          setErro("Email ou senha inválidos");
+        } else if (err.response.status === 403) {
+          setErro("Sua conta foi suspensa. Entre em contato com o Instituto");
+        } else if (err.response.status === 500) {
+          setErro("Erro no servidor. Tente novamente em instantes");
+        } else {
+          setErro("Erro ao fazer login. Verifique os dados e tente novamente");
+        }
+      } else if (err.request) {
+        setErro("Sem conexão com o servidor. Verifique sua internet");
+      } else {
+        setErro("Erro inesperado. Tente novamente");
+      }
     } finally {
       setLoading(false);
     }

@@ -1,11 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useAuth } from "../hooks/useAuth";
 import "../App.css";
 
 function Perfil() {
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) window.location.href = "/";
-  }, []);
+  const { isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        fontSize: 18,
+        color: "#64748b"
+      }}>
+        Verificando autenticação...
+      </div>
+    );
+  }
 
   // MVP: dados mock (depois vem do backend)
   const [dados, setDados] = useState({
