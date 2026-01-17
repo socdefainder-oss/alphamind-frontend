@@ -22,32 +22,24 @@ export function useAuth() {
       }
 
       try {
-        // Tenta validar o token com o backend
+        // Valida o token com o backend
         const response = await api.get("/me");
         setUser(response.data);
         setIsAuthenticated(true);
         setIsLoading(false);
       } catch (error) {
-        // Se o endpoint /me não existe (404), aceita o token por enquanto
-        // Quando implementar o endpoint no backend, remova esta condição
-        if (error.response && error.response.status === 404) {
-          console.warn("⚠️ Endpoint /me não implementado. Validação de token simplificada ativa.");
-          setIsAuthenticated(true);
-          setIsLoading(false);
-          return;
-        }
-        
         // Se der erro 401/403 (token inválido/expirado), redireciona
         if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-          setIsAuthenticated(false);
+          console.log("Token inválido ou expirado, redirecionando para login...");
           localStorage.removeItem("token");
+          setIsAuthenticated(false);
           setIsLoading(false);
           window.location.href = "/";
           return;
         }
         
-        // Para outros erros (servidor fora, etc), aceita o token localmente
-        console.warn("⚠️ Erro ao validar token, aceitando localmente:", error.message);
+        // Para outros erros (servidor fora, erro de rede), aceita o token localmente como fallback
+        console.warn("⚠️ Erro ao validar token com backend, aceitando localmente:", error.message);
         setIsAuthenticated(true);
         setIsLoading(false);
       }
