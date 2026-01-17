@@ -5,21 +5,6 @@ import "../App.css";
 function Avisos() {
   const { isLoading } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        fontSize: 18,
-        color: "#64748b"
-      }}>
-        Verificando autenticação...
-      </div>
-    );
-  }
-
   // Mock (depois vem do backend)
   const [avisos] = useState([
     {
@@ -117,6 +102,21 @@ function Avisos() {
 
     return base;
   }, [avisos, tipoFiltro, statusFiltro, busca]);
+
+  if (isLoading) {
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        fontSize: 18,
+        color: "#64748b"
+      }}>
+        Verificando autenticação...
+      </div>
+    );
+  }
 
   function voltarDashboard() {
     window.location.href = "/dashboard";

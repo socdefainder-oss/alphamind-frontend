@@ -5,21 +5,6 @@ import "../App.css";
 function Jornada() {
   const { isLoading } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        fontSize: 18,
-        color: "#64748b"
-      }}>
-        Verificando autenticação...
-      </div>
-    );
-  }
-
   // Mock (por enquanto). Depois vem do backend.
   const [aluno] = useState({
     nome: "Aluno(a)",
@@ -80,6 +65,21 @@ function Jornada() {
 
     return { emAndamento, concluidos, naFila, mediaProgresso, provasPendentes, proximasAulas };
   }, [cursos]);
+
+  if (isLoading) {
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        fontSize: 18,
+        color: "#64748b"
+      }}>
+        Verificando autenticação...
+      </div>
+    );
+  }
 
   function voltarDashboard() {
     window.location.href = "/dashboard";

@@ -5,21 +5,6 @@ import "../App.css";
 function Perfil() {
   const { isLoading } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        fontSize: 18,
-        color: "#64748b"
-      }}>
-        Verificando autenticação...
-      </div>
-    );
-  }
-
   // MVP: dados mock (depois vem do backend)
   const [dados, setDados] = useState({
     nome: "Aluno(a)",
@@ -44,6 +29,21 @@ function Perfil() {
     const pct = Math.round((preenchidos / total) * 100);
     return { preenchidos, total, pct };
   }, [dados]);
+
+  if (isLoading) {
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        fontSize: 18,
+        color: "#64748b"
+      }}>
+        Verificando autenticação...
+      </div>
+    );
+  }
 
   function voltarDashboard() {
     window.location.href = "/dashboard";

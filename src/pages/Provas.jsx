@@ -5,21 +5,6 @@ import "../App.css";
 function Provas() {
   const { isLoading } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        fontSize: 18,
-        color: "#64748b"
-      }}>
-        Verificando autenticação...
-      </div>
-    );
-  }
-
   // Mock (depois vem do backend)
   const [provas] = useState([
     {
@@ -87,6 +72,21 @@ function Provas() {
   const lista = useMemo(() => {
     return provas.filter(p => p.status === aba);
   }, [provas, aba]);
+
+  if (isLoading) {
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        fontSize: 18,
+        color: "#64748b"
+      }}>
+        Verificando autenticação...
+      </div>
+    );
+  }
 
   function voltarDashboard() {
     window.location.href = "/dashboard";

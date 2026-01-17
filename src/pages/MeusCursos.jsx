@@ -5,21 +5,6 @@ import "../App.css";
 function MeusCursos() {
   const { isLoading } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        fontSize: 18,
-        color: "#64748b"
-      }}>
-        Verificando autenticação...
-      </div>
-    );
-  }
-
   // Mock inicial (depois vem do backend)
   const [cursos] = useState([
     {
@@ -62,6 +47,21 @@ function MeusCursos() {
       concluidos: cursos.filter(c => c.status === "CONCLUIDO").length,
     };
   }, [cursos]);
+
+  if (isLoading) {
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        fontSize: 18,
+        color: "#64748b"
+      }}>
+        Verificando autenticação...
+      </div>
+    );
+  }
 
   return (
     <div className="shell">
