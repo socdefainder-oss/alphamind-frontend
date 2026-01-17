@@ -81,6 +81,11 @@ function Jornada() {
     );
   }
 
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  }
+
   function voltarDashboard() {
     window.location.href = "/dashboard";
   }
@@ -95,7 +100,7 @@ function Jornada() {
             <div>
               <div>Instituto AlphaMind</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)" }}>
-                Portal do Aluno
+                Transformação através do conhecimento
               </div>
             </div>
           </div>
@@ -103,9 +108,18 @@ function Jornada() {
           <nav className="nav">
             <a href="/dashboard">Home</a>
             <a href="/jornada" style={{ background: "rgba(255,255,255,0.10)" }}>Jornada</a>
-            <a href="/dashboard#cursos">Cursos</a>
-            <a href="/dashboard#provas">Provas</a>
-            <button className="btn btn-ghost" onClick={voltarDashboard}>Voltar</button>
+            <a href="/meus-cursos">Cursos</a>
+            <a href="/provas">Provas</a>
+            <a href="/avisos">Avisos</a>
+            <a href="/perfil">Perfil</a>
+
+            <button className="btn btn-ghost" onClick={logout}>
+              Sair
+            </button>
+
+            <button className="btn btn-primary" onClick={voltarDashboard}>
+              Voltar
+            </button>
           </nav>
         </div>
       </header>

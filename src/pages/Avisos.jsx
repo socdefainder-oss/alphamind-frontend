@@ -118,6 +118,11 @@ function Avisos() {
     );
   }
 
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  }
+
   function voltarDashboard() {
     window.location.href = "/dashboard";
   }
@@ -176,7 +181,7 @@ function Avisos() {
             <div>
               <div>Instituto AlphaMind</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)" }}>
-                Portal do Aluno
+                Transformação através do conhecimento
               </div>
             </div>
           </div>
@@ -184,12 +189,18 @@ function Avisos() {
           <nav className="nav">
             <a href="/dashboard">Home</a>
             <a href="/jornada">Jornada</a>
-            <a href="/meus-cursos">Meus Cursos</a>
+            <a href="/meus-cursos">Cursos</a>
             <a href="/provas">Provas</a>
             <a href="/avisos" style={{ background: "rgba(255,255,255,0.10)" }}>
               Avisos
             </a>
-            <button className="btn btn-ghost" onClick={voltarDashboard}>
+            <a href="/perfil">Perfil</a>
+
+            <button className="btn btn-ghost" onClick={logout}>
+              Sair
+            </button>
+
+            <button className="btn btn-primary" onClick={voltarDashboard}>
               Voltar
             </button>
           </nav>
