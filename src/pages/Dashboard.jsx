@@ -1,16 +1,37 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import api from "../services/api";
 import "../App.css";
 
 function Dashboard() {
   const { isLoading, user } = useAuth();
+  const navigate = useNavigate();
+  const [cursos, setCursos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadCursos();
+  }, []);
+
+  async function loadCursos() {
+    try {
+      const response = await api.get("/api/aluno/minhas-matriculas");
+      setCursos(response.data);
+    } catch (error) {
+      console.error("Erro ao carregar cursos:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function logout() {
     localStorage.removeItem("token");
-    window.location.href = "/";
+    navigate("/");
   }
 
   // Mostra loading enquanto valida o token
-  if (isLoading) {
+  if (isLoading || loading) {
     return (
       <div style={{
         display: "flex",
@@ -20,15 +41,26 @@ function Dashboard() {
         fontSize: 18,
         color: "#64748b"
       }}>
-        Verificando autenticação...
+        {isLoading ? "Verificando autenticação..." : "Carregando dados..."}
       </div>
     );
   }
 
-  // placeholders do MVP (depois a gente puxa do backend)
   const alunoNome = user?.nome || "Aluno(a)";
-  const cursoAtual = "Teologia Inteligente";
-  const progresso = 20;
+  
+  // Calcular curso mais avançado (em andamento)
+  const cursosEmAndamento = cursos.filter(c => {
+    const prog = parseFloat(c.progresso_percentual) || 0;
+    return prog > 0 && prog < 100;
+  });
+  
+  const cursoAtual = cursosEmAndamento.length > 0 
+    ? cursosEmAndamento[0] 
+    : cursos[0];
+  
+  const progresso = cursoAtual 
+    ? Math.round(parseFloat(cursoAtual.progresso_percentual) || 0)
+    : 0;
 
   return (
     <div className="shell">
@@ -61,7 +93,7 @@ function Dashboard() {
 
             <button
               className="btn btn-primary"
-              onClick={() => window.location.href = "/catalogo"}
+              onClick={() => navigate("/catalogo")}
             >
               Catálogo de Cursos
             </button>
@@ -126,26 +158,47 @@ function Dashboard() {
                 sua matrícula em dia.
               </p>
 
-              <div
-                style={{
-                  marginTop: 12,
-                  fontSize: 14,
-                  color: "rgba(255,255,255,0.85)",
-                }}
-              >
-                Curso em andamento: <b>{cursoAtual}</b> • Progresso:{" "}
-                <b>{progresso}%</b>
-              </div>
+              {cursoAtual ? (
+                <div
+                  style={{
+                    marginTop: 12,
+                    fontSize: 14,
+                    color: "rgba(255,255,255,0.85)",
+                  }}
+                >
+                  Curso em andamento: <b>{cursoAtual.titulo}</b> • Progresso:{" "}
+                  <b>{progresso}%</b>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    marginTop: 12,
+                    fontSize: 14,
+                    color: "rgba(255,255,255,0.85)",
+                  }}
+                >
+                  Você ainda não está matriculado em nenhum curso. <b><a href="/catalogo" style={{ color: "#f5c84c" }}>Explore o catálogo!</a></b>
+                </div>
+              )}
             </div>
 
             <div className="grid">
               <div className="card span-4" id="cursos">
                 <h3>Meus Cursos</h3>
                 <p>Acesse suas aulas e módulos.</p>
+                <div style={{ marginTop: 12, fontSize: 14, color: "#334155" }}>
+                  {cursos.length > 0 ? (
+                    <>
+                      <b>{cursos.length}</b> curso{cursos.length > 1 ? 's' : ''} matriculado{cursos.length > 1 ? 's' : ''}
+                    </>
+                  ) : (
+                    "Nenhum curso ainda"
+                  )}
+                </div>
                 <div style={{ marginTop: 12 }}>
                   <button
                     className="btn btn-primary"
-                    onClick={() => (window.location.href = "/meus-cursos")}
+                    onClick={() => navigate("/meus-cursos")}
                   >
                     Abrir cursos
                   </button>
@@ -158,7 +211,7 @@ function Dashboard() {
                 <div style={{ marginTop: 12 }}>
                   <button
                     className="btn btn-primary"
-                    onClick={() => (window.location.href = "/provas")}
+                    onClick={() => navigate("/provas")}
                   >
                     Ver provas
                   </button>
@@ -182,51 +235,78 @@ function Dashboard() {
                 <h3>Jornada do Curso</h3>
                 <p>Veja sua trilha, módulos e evolução.</p>
 
-                <div
-                  style={{
-                    marginTop: 12,
-                    background: "#f2f4f8",
-                    borderRadius: 14,
-                    padding: 12,
-                  }}
-                >
+                {cursoAtual ? (
                   <div
                     style={{
-                      fontSize: 13,
-                      color: "#334155",
-                      marginBottom: 6,
-                    }}
-                  >
-                    Progresso do curso
-                  </div>
-
-                  <div
-                    style={{
-                      height: 10,
-                      borderRadius: 999,
-                      background: "#e2e8f0",
-                      overflow: "hidden",
+                      marginTop: 12,
+                      background: "#f2f4f8",
+                      borderRadius: 14,
+                      padding: 12,
                     }}
                   >
                     <div
                       style={{
-                        width: `${progresso}%`,
-                        height: "100%",
-                        background:
-                          "linear-gradient(135deg, #f5c84c, #f59e0b)",
+                        fontSize: 13,
+                        color: "#334155",
+                        marginBottom: 6,
                       }}
-                    />
-                  </div>
+                    >
+                      Progresso: <b>{cursoAtual.titulo}</b>
+                    </div>
 
-                  <div style={{ marginTop: 12 }}>
+                    <div
+                      style={{
+                        height: 10,
+                        borderRadius: 999,
+                        background: "#e2e8f0",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${progresso}%`,
+                          height: "100%",
+                          background:
+                            "linear-gradient(135deg, #f5c84c, #f59e0b)",
+                        }}
+                      />
+                    </div>
+
+                    <div style={{ fontSize: 13, color: "#64748b", marginTop: 6 }}>
+                      {cursoAtual.aulas_concluidas || 0} de {cursoAtual.total_aulas || 0} aulas concluídas • {progresso}%
+                    </div>
+
+                    <div style={{ marginTop: 12 }}>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => navigate("/jornada")}
+                      >
+                        Abrir Jornada completa
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      marginTop: 12,
+                      background: "#f2f4f8",
+                      borderRadius: 14,
+                      padding: 12,
+                      textAlign: "center",
+                      color: "#64748b"
+                    }}
+                  >
+                    <div style={{ marginBottom: 12 }}>
+                      Matricule-se em um curso para começar!
+                    </div>
                     <button
                       className="btn btn-primary"
-                      onClick={() => (window.location.href = "/jornada")}
+                      onClick={() => navigate("/catalogo")}
                     >
-                      Abrir Jornada completa
+                      Explorar catálogo
                     </button>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="card span-4" id="avisos">
@@ -235,7 +315,7 @@ function Dashboard() {
                 <div style={{ marginTop: 12 }}>
                   <button
                     className="btn btn-primary"
-                    onClick={() => (window.location.href = "/avisos")}
+                    onClick={() => navigate("/avisos")}
                   >
                     Ver avisos
                   </button>
@@ -249,7 +329,7 @@ function Dashboard() {
                 <div style={{ marginTop: 12 }}>
                   <button
                     className="btn btn-primary"
-                    onClick={() => (window.location.href = "/perfil")}
+                    onClick={() => navigate("/perfil")}
                   >
                     Abrir perfil
                   </button>
