@@ -11,6 +11,7 @@ import Perfil from "./pages/Perfil";
 import AdminCursos from "./pages/AdminCursos";
 import AdminModulos from "./pages/AdminModulos";
 import AdminAulas from "./pages/AdminAulas";
+import CursoView from "./pages/CursoView";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/jornada" element={<Jornada />} />
         <Route path="/meus-cursos" element={<MeusCursos />} />
+        <Route path="/curso/:cursoId" element={<CursoView />} />
         <Route path="/provas" element={<Provas />} />
         <Route path="/avisos" element={<Avisos />} />
         <Route path="/perfil" element={<Perfil />} />

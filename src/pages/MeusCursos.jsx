@@ -1,50 +1,35 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import api from "../services/api";
 import "../App.css";
 
 function MeusCursos() {
   const { isLoading } = useAuth();
+  const navigate = useNavigate();
+  const [cursos, setCursos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock inicial (depois vem do backend)
-  const [cursos] = useState([
-    {
-      id: 1,
-      titulo: "Teologia Inteligente",
-      status: "EM_ANDAMENTO",
-      progresso: 20,
-      modulos: [
-        { id: 11, titulo: "Boas-vindas", progresso: 100 },
-        { id: 12, titulo: "Fundamentos", progresso: 40 },
-        { id: 13, titulo: "Aplicação prática", progresso: 0 },
-      ],
-    },
-    {
-      id: 2,
-      titulo: "Liderança Cristã na Prática",
-      status: "NA_FILA",
-      progresso: 0,
-      modulos: [
-        { id: 21, titulo: "Introdução", progresso: 0 },
-        { id: 22, titulo: "Serviço e caráter", progresso: 0 },
-      ],
-    },
-    {
-      id: 3,
-      titulo: "Fundamentos da Fé",
-      status: "CONCLUIDO",
-      progresso: 100,
-      modulos: [
-        { id: 31, titulo: "Bases da fé", progresso: 100 },
-        { id: 32, titulo: "Vida cristã", progresso: 100 },
-      ],
-    },
-  ]);
+  useEffect(() => {
+    loadMeusCursos();
+  }, []);
+
+  async function loadMeusCursos() {
+    try {
+      const response = await api.get("/api/aluno/minhas-matriculas");
+      setCursos(response.data);
+    } catch (error) {
+      console.error("Erro ao carregar cursos:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const resumo = useMemo(() => {
     return {
-      emAndamento: cursos.filter(c => c.status === "EM_ANDAMENTO").length,
-      naFila: cursos.filter(c => c.status === "NA_FILA").length,
-      concluidos: cursos.filter(c => c.status === "CONCLUIDO").length,
+      emAndamento: cursos.filter(c => parseFloat(c.progresso_percentual) > 0 && parseFloat(c.progresso_percentual) < 100).length,
+      naFila: cursos.filter(c => parseFloat(c.progresso_percentual) === 0).length,
+      concluidos: cursos.filter(c => parseFloat(c.progresso_percentual) === 100).length,
     };
   }, [cursos]);
 
@@ -65,11 +50,29 @@ function MeusCursos() {
 
   function logout() {
     localStorage.removeItem("token");
-    window.location.href = "/";
+    navigate("/");
   }
 
   function voltarDashboard() {
-    window.location.href = "/dashboard";
+    navigate("/dashboard");
+  }
+
+  function getStatusLabel(progresso) {
+    const prog = parseFloat(progresso);
+    if (prog === 0) return "NA FILA";
+    if (prog === 100) return "CONCLUÍDO";
+    return "EM ANDAMENTO";
+  }
+
+  function getStatusColor(progresso) {
+    const prog = parseFloat(progresso);
+    if (prog === 0) return "#94a3b8";
+    if (prog === 100) return "#10b981";
+    return "#f59e0b";
+  }
+
+  if (loading || isLoading) {
+    return <div className="shell"><div className="main"><div className="main-inner">Carregando...</div></div></div>;
   }
 
   return (
@@ -141,90 +144,83 @@ function MeusCursos() {
               <p>Visão detalhada da sua jornada acadêmica.</p>
 
               <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 14 }}>
-                {cursos.map(curso => (
-                  <div
-                    key={curso.id}
-                    style={{
-                      border: "1px solid rgba(15,23,42,0.12)",
-                      borderRadius: 16,
-                      padding: 16,
-                      background: "#fff",
-                    }}
-                  >
+                {cursos.length === 0 ? (
+                  <p style={{ textAlign: "center", color: "#94a3b8", padding: "40px 0" }}>
+                    Você ainda não está matriculado em nenhum curso.
+                  </p>
+                ) : (
+                  cursos.map(curso => (
                     <div
+                      key={curso.matricula_id}
                       style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        gap: 12,
-                        flexWrap: "wrap",
+                        border: "1px solid rgba(15,23,42,0.12)",
+                        borderRadius: 16,
+                        padding: 16,
+                        background: "#fff",
                       }}
                     >
-                      <div>
-                        <div style={{ fontWeight: 900, fontSize: 16 }}>
-                          {curso.titulo}
-                        </div>
-                        <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
-                          Status: <b>{curso.status.replace("_", " ")}</b> • Progresso:{" "}
-                          <b>{curso.progresso}%</b>
-                        </div>
-                      </div>
-
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => alert(`Em breve: abrir curso "${curso.titulo}"`)}
-                      >
-                        Acessar curso
-                      </button>
-                    </div>
-
-                    {/* Progresso */}
-                    <div style={{ marginTop: 12 }}>
                       <div
                         style={{
-                          height: 10,
-                          borderRadius: 999,
-                          background: "#e2e8f0",
-                          overflow: "hidden",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          gap: 12,
+                          flexWrap: "wrap",
                         }}
                       >
-                        <div
-                          style={{
-                            width: `${curso.progresso}%`,
-                            height: "100%",
-                            background:
-                              "linear-gradient(135deg, #f5c84c, #f59e0b)",
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Módulos */}
-                    <div
-                      style={{
-                        marginTop: 12,
-                        display: "grid",
-                        gridTemplateColumns: "repeat(12, 1fr)",
-                        gap: 10,
-                      }}
-                    >
-                      {curso.modulos.map(m => (
-                        <div
-                          key={m.id}
-                          style={{
-                            gridColumn: "span 4",
-                            background: "#f2f4f8",
-                            borderRadius: 14,
-                            padding: 12,
-                            border: "1px solid rgba(15,23,42,0.10)",
-                          }}
-                        >
-                          <div style={{ fontWeight: 700 }}>{m.titulo}</div>
-                          <div style={{ fontSize: 13, color: "#64748b", marginTop: 6 }}>
-                            Progresso: <b>{m.progresso}%</b>
+                        <div>
+                          <div style={{ fontWeight: 900, fontSize: 16 }}>
+                            {curso.titulo}
+                          </div>
+                          <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
+                            Status: <b style={{ color: getStatusColor(curso.progresso_percentual) }}>
+                              {getStatusLabel(curso.progresso_percentual)}
+                            </b> • Progresso: <b>{curso.progresso_percentual}%</b>
+                          </div>
+                          <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>
+                            {curso.aulas_concluidas} de {curso.total_aulas} aulas concluídas
                           </div>
                         </div>
-                      ))}
+
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => navigate(`/curso/${curso.id}`)}
+                        >
+                          Acessar curso
+                        </button>
+                      </div>
+
+                      {/* Progresso */}
+                      <div style={{ marginTop: 12 }}>
+                        <div
+                          style={{
+                            height: 10,
+                            borderRadius: 999,
+                            background: "#e2e8f0",
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: `${curso.progresso_percentual}%`,
+                              height: "100%",
+                              background: "linear-gradient(135deg, #00d4ff, #0099ff)",
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+export default MeusCursos;
                   </div>
                 ))}
               </div>
