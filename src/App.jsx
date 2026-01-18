@@ -9,6 +9,7 @@ import Provas from "./pages/Provas";
 import Avisos from "./pages/Avisos";
 import Perfil from "./pages/Perfil";
 import AdminCursos from "./pages/AdminCursos";
+import AdminModulos from "./pages/AdminModulos";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
 
         {/* Admin */}
         <Route path="/admin/cursos" element={<AdminCursos />} />
+        <Route path="/admin/cursos/:cursoId/modulos" element={<AdminModulos />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
