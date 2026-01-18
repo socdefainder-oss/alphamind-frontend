@@ -221,15 +221,3 @@ function MeusCursos() {
 }
 
 export default MeusCursos;
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-}
-
-export default MeusCursos;
