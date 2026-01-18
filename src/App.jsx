@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Jornada from "./pages/Jornada";
 import MeusCursos from "./pages/MeusCursos";
+import Catalogo from "./pages/Catalogo";
 import Provas from "./pages/Provas";
 import Avisos from "./pages/Avisos";
 import Perfil from "./pages/Perfil";
@@ -25,6 +26,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/jornada" element={<Jornada />} />
         <Route path="/meus-cursos" element={<MeusCursos />} />
+        <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/curso/:cursoId" element={<CursoView />} />
         <Route path="/provas" element={<Provas />} />
         <Route path="/avisos" element={<Avisos />} />

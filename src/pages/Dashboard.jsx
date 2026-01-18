@@ -61,9 +61,9 @@ function Dashboard() {
 
             <button
               className="btn btn-primary"
-              onClick={() => alert("Em breve: matrícula/rematrícula")}
+              onClick={() => window.location.href = "/catalogo"}
             >
-              Matrícula / Rematrícula
+              Catálogo de Cursos
             </button>
           </nav>
         </div>
@@ -81,6 +81,10 @@ function Dashboard() {
 
             <a className="side-item" href="/meus-cursos">
               <span className="dot" /> Meus cursos
+            </a>
+
+            <a className="side-item" href="/catalogo">
+              <span className="dot" /> Catálogo
             </a>
 
             <a className="side-item" href="/provas">
