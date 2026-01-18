@@ -267,9 +267,9 @@ export default function CursoView() {
         {/* Hero Section */}
         <div style={{
           background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
-          borderRadius: "20px",
-          padding: "40px",
-          marginBottom: "30px",
+          borderRadius: "16px",
+          padding: "24px 32px",
+          marginBottom: "24px",
           color: "#fff"
         }}>
           <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
@@ -279,25 +279,25 @@ export default function CursoView() {
                 background: "rgba(255,255,255,0.1)",
                 border: "1px solid rgba(255,255,255,0.2)",
                 color: "#fff",
-                padding: "10px 20px",
-                borderRadius: "10px",
+                padding: "8px 16px",
+                borderRadius: "8px",
                 cursor: "pointer",
-                fontSize: 14,
-                marginBottom: 20,
+                fontSize: 13,
+                marginBottom: 16,
                 display: "flex",
                 alignItems: "center",
-                gap: 8
+                gap: 6
               }}
             >
               ← Voltar para Meus Cursos
             </button>
 
-            <h1 style={{ fontSize: 36, fontWeight: 900, margin: "0 0 12px 0" }}>
+            <h1 style={{ fontSize: 28, fontWeight: 900, margin: "0 0 8px 0" }}>
               {curso.titulo}
             </h1>
             
             {curso.descricao && (
-              <p style={{ fontSize: 16, color: "rgba(255,255,255,0.8)", marginBottom: 24, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", marginBottom: 16, lineHeight: 1.5 }}>
                 {curso.descricao}
               </p>
             )}
@@ -305,16 +305,16 @@ export default function CursoView() {
             {/* Progresso */}
             <div style={{ 
               background: "rgba(255,255,255,0.1)", 
-              borderRadius: "12px", 
-              padding: "20px",
+              borderRadius: "10px", 
+              padding: "14px",
               backdropFilter: "blur(10px)"
             }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>Seu Progresso no Curso</span>
-                <span style={{ fontSize: 14, fontWeight: 800 }}>{progressoPercentual}%</span>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                <span style={{ fontSize: 13, fontWeight: 600 }}>Seu Progresso no Curso</span>
+                <span style={{ fontSize: 13, fontWeight: 800 }}>{progressoPercentual}%</span>
               </div>
               <div style={{ 
-                height: 12, 
+                height: 10, 
                 borderRadius: 999, 
                 background: "rgba(0,0,0,0.2)", 
                 overflow: "hidden" 
@@ -326,7 +326,7 @@ export default function CursoView() {
                   transition: "width 0.5s ease"
                 }} />
               </div>
-              <div style={{ marginTop: 8, fontSize: 12, color: "rgba(255,255,255,0.7)" }}>
+              <div style={{ marginTop: 6, fontSize: 11, color: "rgba(255,255,255,0.65)" }}>
                 {aulasConcluidas} de {totalAulas} aulas concluídas
               </div>
             </div>
