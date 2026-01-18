@@ -108,9 +108,9 @@ export default function AdminAulas() {
     setEditingId(aula.id);
     setFormData({
       titulo: aula.titulo,
-      tipo: aula.tipo,
-      conteudo_url: aula.conteudo_url || "",
-      conteudo_texto: aula.conteudo_texto || "",
+      tipo: aula.tipo === 'gravado' ? 'video' : aula.tipo, // mapear de volta
+      conteudo_url: aula.video_url || "",
+      conteudo_texto: aula.descricao || "",
       duracao_minutos: aula.duracao_minutos || "",
       ordem: aula.ordem,
     });
@@ -298,24 +298,17 @@ export default function AdminAulas() {
                 </div>
 
                 <div style={styles.aulaContent}>
-                  {aula.tipo === "video" && aula.conteudo_url && (
+                  {aula.tipo === "gravado" && aula.video_url && (
                     <p style={styles.url}>
-                      🔗 <a href={aula.conteudo_url} target="_blank" rel="noopener noreferrer" style={styles.link}>
-                        {aula.conteudo_url}
+                      🔗 <a href={aula.video_url} target="_blank" rel="noopener noreferrer" style={styles.link}>
+                        {aula.video_url}
                       </a>
                     </p>
                   )}
-                  {aula.tipo === "pdf" && aula.conteudo_url && (
-                    <p style={styles.url}>
-                      🔗 <a href={aula.conteudo_url} target="_blank" rel="noopener noreferrer" style={styles.link}>
-                        {aula.conteudo_url}
-                      </a>
-                    </p>
-                  )}
-                  {aula.tipo === "texto" && aula.conteudo_texto && (
+                  {aula.descricao && (
                     <p style={styles.textoPreview}>
-                      {aula.conteudo_texto.substring(0, 200)}
-                      {aula.conteudo_texto.length > 200 ? "..." : ""}
+                      {aula.descricao.substring(0, 200)}
+                      {aula.descricao.length > 200 ? "..." : ""}
                     </p>
                   )}
                 </div>
