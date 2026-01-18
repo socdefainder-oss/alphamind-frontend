@@ -143,7 +143,9 @@ function Provas() {
       <header className="topbar">
         <div className="topbar-inner">
           <div className="brand">
-            <div className="brand-badge" />
+            <div className="brand-badge">
+              <img src="/logo.png" alt="AlphaMind" />
+            </div>
             <div>
               <div>Instituto AlphaMind</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)" }}>
