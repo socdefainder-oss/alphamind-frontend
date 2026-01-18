@@ -1,72 +1,76 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import api from "../services/api";
 import "../App.css";
 
 function Jornada() {
   const { isLoading } = useAuth();
+  const navigate = useNavigate();
+  const [cursos, setCursos] = useState([]);
+  const [cursosDetalhados, setCursosDetalhados] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock (por enquanto). Depois vem do backend.
-  const [aluno] = useState({
-    nome: "Aluno(a)",
-    nivel: "Iniciante",
-    membroDesde: "Jan/2026",
-  });
+  useEffect(() => {
+    loadJornadaData();
+  }, []);
 
-  const [cursos] = useState([
-    {
-      id: 1,
-      titulo: "Teologia Inteligente",
-      status: "EM_ANDAMENTO",
-      progresso: 20,
-      modulos: [
-        { id: 11, titulo: "Boas-vindas", progresso: 100 },
-        { id: 12, titulo: "Fundamentos", progresso: 40 },
-        { id: 13, titulo: "Aplicação prática", progresso: 0 },
-      ],
-      proximasAulas: [
-        { id: 101, titulo: "Aula 03 — Fundamentos (parte 2)", duracao: "12 min" },
-        { id: 102, titulo: "Aula 04 — Exercício guiado", duracao: "18 min" },
-      ],
-      provas: [
-        { id: 201, titulo: "Prova do Módulo: Fundamentos", status: "PENDENTE" },
-      ],
-    },
-    {
-      id: 2,
-      titulo: "Liderança Cristã na Prática",
-      status: "NA_FILA",
-      progresso: 0,
-      modulos: [
-        { id: 21, titulo: "Introdução", progresso: 0 },
-        { id: 22, titulo: "Serviço e caráter", progresso: 0 },
-      ],
-      proximasAulas: [],
-      provas: [],
-    },
-  ]);
+  async function loadJornadaData() {
+    try {
+      // Buscar cursos matriculados
+      const response = await api.get("/api/aluno/minhas-matriculas");
+      setCursos(response.data);
+
+      // Para cada curso, buscar detalhes com módulos
+      const detalhesPromises = response.data.map(async (curso) => {
+        try {
+          const progressoRes = await api.get(`/api/aluno/progresso/${curso.curso_id}`);
+          return {
+            ...curso,
+            modulosDetalhados: progressoRes.data.modulos || []
+          };
+        } catch (error) {
+          console.error(`Erro ao buscar progresso do curso ${curso.curso_id}:`, error);
+          return { ...curso, modulosDetalhados: [] };
+        }
+      });
+
+      const detalhados = await Promise.all(detalhesPromises);
+      setCursosDetalhados(detalhados);
+    } catch (error) {
+      console.error("Erro ao carregar jornada:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const resumo = useMemo(() => {
-    const emAndamento = cursos.filter(c => c.status === "EM_ANDAMENTO").length;
-    const concluidos = cursos.filter(c => c.status === "CONCLUIDO").length;
-    const naFila = cursos.filter(c => c.status === "NA_FILA").length;
+    const emAndamento = cursos.filter(c => {
+      const prog = parseFloat(c.progresso_percentual) || 0;
+      return prog > 0 && prog < 100;
+    }).length;
+
+    const concluidos = cursos.filter(c => parseFloat(c.progresso_percentual) === 100).length;
+    const naFila = cursos.filter(c => parseFloat(c.progresso_percentual) === 0).length;
 
     const mediaProgresso =
       cursos.length === 0
         ? 0
-        : Math.round(cursos.reduce((acc, c) => acc + (c.progresso || 0), 0) / cursos.length);
+        : Math.round(
+            cursos.reduce((acc, c) => acc + (parseFloat(c.progresso_percentual) || 0), 0) / cursos.length
+          );
 
-    const provasPendentes = cursos
-      .flatMap(c => c.provas || [])
-      .filter(p => p.status === "PENDENTE").length;
+    // Provas pendentes - ainda não implementadas, então sempre 0
+    const provasPendentes = 0;
 
-    const proximasAulas = cursos
-      .flatMap(c => c.proximasAulas || [])
-      .slice(0, 4);
+    // Próximas aulas: buscar em todos os cursos as aulas não concluídas
+    const proximasAulas = [];
+    // TODO: implementar quando tivermos endpoint de próximas aulas
 
     return { emAndamento, concluidos, naFila, mediaProgresso, provasPendentes, proximasAulas };
   }, [cursos]);
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return (
       <div style={{
         display: "flex",
@@ -76,18 +80,25 @@ function Jornada() {
         fontSize: 18,
         color: "#64748b"
       }}>
-        Verificando autenticação...
+        {isLoading ? "Verificando autenticação..." : "Carregando jornada..."}
       </div>
     );
   }
 
   function logout() {
     localStorage.removeItem("token");
-    window.location.href = "/";
+    navigate("/");
   }
 
   function voltarDashboard() {
-    window.location.href = "/dashboard";
+    navigate("/dashboard");
+  }
+
+  function getStatusLabel(progresso) {
+    const prog = parseFloat(progresso) || 0;
+    if (prog === 0) return "NA FILA";
+    if (prog === 100) return "CONCLUÍDO";
+    return "EM ANDAMENTO";
   }
 
   return (
@@ -135,7 +146,7 @@ function Jornada() {
 
             <div style={{ marginTop: 12, display: "flex", gap: 12, flexWrap: "wrap" }}>
               <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 14 }}>
-                <b>{aluno.nome}</b> • Nível: <b>{aluno.nivel}</b> • Desde: <b>{aluno.membroDesde}</b>
+                <b>Aluno(a)</b> • Nível: <b>Iniciante</b> • Desde: <b>Jan/2026</b>
               </div>
             </div>
           </div>
@@ -189,7 +200,11 @@ function Jornada() {
 
               <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
                 {resumo.proximasAulas.length === 0 ? (
-                  <div style={{ color: "#64748b" }}>Sem aulas sugeridas no momento.</div>
+                  <div style={{ color: "#64748b" }}>
+                    {cursos.length === 0 
+                      ? "Matricule-se em um curso para começar sua jornada!"
+                      : "Continue seus estudos acessando seus cursos."}
+                  </div>
                 ) : (
                   resumo.proximasAulas.map(a => (
                     <div
@@ -212,8 +227,11 @@ function Jornada() {
               </div>
 
               <div style={{ marginTop: 12 }}>
-                <button className="btn btn-primary" onClick={() => alert("Em breve: abrir player da próxima aula")}>
-                  Continuar
+                <button 
+                  className="btn btn-primary" 
+                  onClick={() => navigate("/meus-cursos")}
+                >
+                  Ver meus cursos
                 </button>
               </div>
             </div>
@@ -224,13 +242,14 @@ function Jornada() {
               <p>Sugestões para a sua trilha.</p>
 
               <div style={{ marginTop: 12, fontSize: 14, color: "#334155", lineHeight: 1.8 }}>
-                • Fundamentos da Fé (em breve)<br />
-                • Vida Devocional (em breve)<br />
-                • Liderança e Serviço (em breve)
+                Navegue pelo catálogo e descubra novos cursos para sua formação teológica.
               </div>
 
               <div style={{ marginTop: 12 }}>
-                <button className="btn btn-primary" onClick={() => alert("Em breve: catálogo de cursos")}>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={() => navigate("/catalogo")}
+                >
                   Ver catálogo
                 </button>
               </div>
@@ -241,98 +260,103 @@ function Jornada() {
               <h3>Meus cursos — visão detalhada</h3>
               <p>Você enxerga sua trilha, módulos e o que falta.</p>
 
-              <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
-                {cursos.map(curso => (
-                  <div
-                    key={curso.id}
-                    style={{
-                      padding: 14,
-                      borderRadius: 16,
-                      border: "1px solid rgba(15,23,42,0.12)",
-                      background: "#fff"
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-                      <div>
-                        <div style={{ fontWeight: 900, fontSize: 16, color: "#0f172a" }}>
-                          {curso.titulo}
-                        </div>
-                        <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
-                          Status: <b>{curso.status.replaceAll("_", " ")}</b> • Progresso: <b>{curso.progresso}%</b>
-                        </div>
-                      </div>
-
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => alert(`Em breve: abrir curso "${curso.titulo}"`)}
-                      >
-                        Abrir curso
-                      </button>
-                    </div>
-
-                    {/* Barra progresso */}
-                    <div style={{ marginTop: 12 }}>
-                      <div style={{ height: 10, borderRadius: 999, background: "#e2e8f0", overflow: "hidden" }}>
-                        <div style={{ width: `${curso.progresso}%`, height: "100%", background: "linear-gradient(135deg, #f5c84c, #f59e0b)" }} />
-                      </div>
-                    </div>
-
-                    {/* Módulos */}
-                    <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 10 }}>
-                      {(curso.modulos || []).map(m => (
-                        <div
-                          key={m.id}
-                          style={{
-                            gridColumn: "span 4",
-                            background: "#f2f4f8",
-                            border: "1px solid rgba(15,23,42,0.10)",
-                            borderRadius: 14,
-                            padding: 12
-                          }}
-                        >
-                          <div style={{ fontWeight: 800, color: "#0f172a" }}>{m.titulo}</div>
-                          <div style={{ fontSize: 13, color: "#64748b", marginTop: 6 }}>
-                            Progresso: <b>{m.progresso}%</b>
-                          </div>
-                          <div style={{ height: 8, borderRadius: 999, background: "#e2e8f0", overflow: "hidden", marginTop: 8 }}>
-                            <div style={{ width: `${m.progresso}%`, height: "100%", background: "linear-gradient(135deg, #f5c84c, #f59e0b)" }} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Provas do curso */}
-                    <div style={{ marginTop: 12 }}>
-                      <div style={{ fontSize: 13, color: "#64748b" }}>Provas</div>
-                      {(curso.provas || []).length === 0 ? (
-                        <div style={{ marginTop: 6, color: "#334155" }}>Nenhuma prova cadastrada ainda.</div>
-                      ) : (
-                        <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 8 }}>
-                          {curso.provas.map(p => (
-                            <div
-                              key={p.id}
-                              style={{
-                                padding: 10,
-                                borderRadius: 12,
-                                border: "1px solid rgba(15,23,42,0.10)",
-                                background: "#fff",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                gap: 10
-                              }}
-                            >
-                              <div style={{ fontWeight: 700, color: "#0f172a" }}>{p.titulo}</div>
-                              <div style={{ color: p.status === "PENDENTE" ? "#b45309" : "#16a34a", fontWeight: 800 }}>
-                                {p.status}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+              {cursosDetalhados.length === 0 ? (
+                <div style={{ marginTop: 14, color: "#64748b", textAlign: "center", padding: "40px 20px" }}>
+                  <div style={{ fontSize: 16, marginBottom: 12 }}>
+                    Você ainda não está matriculado em nenhum curso.
                   </div>
-                ))}
-              </div>
+                  <button 
+                    className="btn btn-primary"
+                    onClick={() => navigate("/catalogo")}
+                  >
+                    Explorar catálogo
+                  </button>
+                </div>
+              ) : (
+                <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
+                  {cursosDetalhados.map(curso => {
+                    const progresso = parseFloat(curso.progresso_percentual) || 0;
+                    const status = getStatusLabel(curso.progresso_percentual);
+
+                    return (
+                      <div
+                        key={curso.curso_id}
+                        style={{
+                          padding: 14,
+                          borderRadius: 16,
+                          border: "1px solid rgba(15,23,42,0.12)",
+                          background: "#fff"
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                          <div>
+                            <div style={{ fontWeight: 900, fontSize: 16, color: "#0f172a" }}>
+                              {curso.titulo}
+                            </div>
+                            <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
+                              Status: <b>{status}</b> • Progresso: <b>{progresso.toFixed(0)}%</b>
+                            </div>
+                          </div>
+
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => navigate(`/curso/${curso.curso_id}`)}
+                          >
+                            Abrir curso
+                          </button>
+                        </div>
+
+                        {/* Barra progresso */}
+                        <div style={{ marginTop: 12 }}>
+                          <div style={{ height: 10, borderRadius: 999, background: "#e2e8f0", overflow: "hidden" }}>
+                            <div style={{ width: `${progresso}%`, height: "100%", background: "linear-gradient(135deg, #f5c84c, #f59e0b)" }} />
+                          </div>
+                        </div>
+
+                        {/* Módulos */}
+                        {curso.modulosDetalhados && curso.modulosDetalhados.length > 0 && (
+                          <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 10 }}>
+                            {curso.modulosDetalhados.map(m => {
+                              const moduloProg = parseFloat(m.progresso_percentual) || 0;
+                              return (
+                                <div
+                                  key={m.modulo_id}
+                                  style={{
+                                    gridColumn: "span 4",
+                                    background: "#f2f4f8",
+                                    border: "1px solid rgba(15,23,42,0.10)",
+                                    borderRadius: 14,
+                                    padding: 12
+                                  }}
+                                >
+                                  <div style={{ fontWeight: 800, color: "#0f172a" }}>{m.modulo_titulo}</div>
+                                  <div style={{ fontSize: 13, color: "#64748b", marginTop: 6 }}>
+                                    Progresso: <b>{moduloProg.toFixed(0)}%</b>
+                                  </div>
+                                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>
+                                    {m.aulas_concluidas} de {m.total_aulas} aulas
+                                  </div>
+                                  <div style={{ height: 8, borderRadius: 999, background: "#e2e8f0", overflow: "hidden", marginTop: 8 }}>
+                                    <div style={{ width: `${moduloProg}%`, height: "100%", background: "linear-gradient(135deg, #f5c84c, #f59e0b)" }} />
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* Provas do curso */}
+                        <div style={{ marginTop: 12 }}>
+                          <div style={{ fontSize: 13, color: "#64748b" }}>Provas</div>
+                          <div style={{ marginTop: 6, color: "#334155" }}>
+                            Sistema de provas será implementado em breve.
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
           </div>
