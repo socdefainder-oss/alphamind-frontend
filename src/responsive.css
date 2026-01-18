@@ -156,3 +156,82 @@
     min-width: 600px !important;
   }
 }
+
+/* ===============================
+   PÁGINAS DE AUTENTICAÇÃO (LOGIN/REGISTER)
+   =============================== */
+
+/* Tablets e telas médias */
+@media (max-width: 968px) {
+  .auth-container {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .auth-branding {
+    order: 2;
+  }
+  
+  .auth-form {
+    order: 1;
+  }
+}
+
+/* Celular */
+@media (max-width: 768px) {
+  .auth-page {
+    padding: 12px !important;
+  }
+  
+  .auth-branding,
+  .auth-form {
+    padding: 20px !important;
+    border-radius: 16px !important;
+  }
+  
+  .auth-branding h1 {
+    font-size: 24px !important;
+  }
+  
+  .auth-branding p {
+    font-size: 13px !important;
+  }
+  
+  .auth-features {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .auth-form input,
+  .auth-form button {
+    font-size: 14px !important;
+  }
+}
+
+/* Celular pequeno */
+@media (max-width: 480px) {
+  .auth-page {
+    padding: 8px !important;
+  }
+  
+  .auth-branding,
+  .auth-form {
+    padding: 16px !important;
+    border-radius: 12px !important;
+  }
+  
+  .auth-branding h1 {
+    font-size: 20px !important;
+  }
+  
+  .auth-branding p {
+    font-size: 12px !important;
+  }
+  
+  .auth-branding [style*="width: 42px"] {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .auth-form [style*="fontSize: 20px"] {
+    font-size: 18px !important;
+  }
+}

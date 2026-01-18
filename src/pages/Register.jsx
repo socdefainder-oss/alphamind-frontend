@@ -46,6 +46,7 @@ function Register() {
 
   return (
     <div
+      className="auth-page"
       style={{
         minHeight: "100vh",
         background:
@@ -57,6 +58,7 @@ function Register() {
       }}
     >
       <div
+        className="auth-container"
         style={{
           width: "100%",
           maxWidth: 980,
@@ -68,6 +70,7 @@ function Register() {
       >
         {/* Branding (esquerda) */}
         <div
+          className="auth-branding"
           style={{
             borderRadius: 22,
             padding: 28,
@@ -184,6 +187,7 @@ function Register() {
 
         {/* Form (direita) */}
         <div
+          className="auth-form"
           style={{
             borderRadius: 22,
             padding: 28,

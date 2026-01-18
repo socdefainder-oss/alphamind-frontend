@@ -73,6 +73,7 @@ function Login() {
 
   return (
     <div
+      className="auth-page"
       style={{
         minHeight: "100vh",
         background:
@@ -84,6 +85,7 @@ function Login() {
       }}
     >
       <div
+        className="auth-container"
         style={{
           width: "100%",
           maxWidth: 980,
@@ -95,6 +97,7 @@ function Login() {
       >
         {/* Lado esquerdo (branding) */}
         <div
+          className="auth-branding"
           style={{
             borderRadius: 22,
             padding: 28,
@@ -167,6 +170,7 @@ function Login() {
             </div>
 
             <div
+              className="auth-features"
               style={{
                 marginTop: 18,
                 display: "grid",
@@ -211,6 +215,7 @@ function Login() {
 
         {/* Lado direito (form) */}
         <div
+          className="auth-form"
           style={{
             borderRadius: 22,
             padding: 28,
