@@ -223,7 +223,7 @@ export default function CursoView() {
   }
 
   const totalAulas = curso.modulos?.reduce((sum, mod) => sum + (mod.aulas?.length || 0), 0) || 0;
-  const aulasConclui das = Object.values(progresso).filter(Boolean).length;
+  const aulasConcluidas = Object.values(progresso).filter(Boolean).length;
   const progressoPercentual = totalAulas > 0 ? Math.round((aulasConcluidas / totalAulas) * 100) : 0;
 
   return (
