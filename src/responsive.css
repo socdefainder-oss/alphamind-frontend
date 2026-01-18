@@ -168,11 +168,11 @@
   }
   
   .auth-branding {
-    order: 2;
+    order: 1;
   }
   
   .auth-form {
-    order: 1;
+    order: 2;
   }
 }
 
