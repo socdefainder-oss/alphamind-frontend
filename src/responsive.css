@@ -1,0 +1,158 @@
+/* ===============================
+   RESPONSIVIDADE GLOBAL
+   =============================== */
+
+/* Tablets e telas médias (até 968px) */
+@media (max-width: 968px) {
+  /* Grid de 2 colunas vira 1 coluna */
+  .responsive-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Grid de 12 colunas vira 1 coluna */
+  .responsive-grid-12 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Celular e telas pequenas (até 768px) */
+@media (max-width: 768px) {
+  /* Padding reduzido em containers principais */
+  .main-inner,
+  main {
+    padding: 16px 12px !important;
+  }
+  
+  /* Cards com menos padding */
+  .card,
+  [style*="padding: 30px"],
+  [style*="padding: 24px"] {
+    padding: 16px !important;
+  }
+  
+  /* Títulos menores */
+  h1 {
+    font-size: 20px !important;
+  }
+  
+  h2 {
+    font-size: 18px !important;
+  }
+  
+  h3 {
+    font-size: 16px !important;
+  }
+  
+  /* Fontes de texto reduzidas */
+  p, div {
+    font-size: 14px !important;
+  }
+  
+  /* Botões menores */
+  .btn, button {
+    padding: 10px 16px !important;
+    font-size: 13px !important;
+  }
+  
+  /* Vídeos responsivos */
+  iframe, video {
+    height: 250px !important;
+  }
+  
+  /* Gap reduzido em grids */
+  [style*="gap: 30px"],
+  [style*="gap: 24px"] {
+    gap: 16px !important;
+  }
+}
+
+/* Celular muito pequeno (até 480px) */
+@media (max-width: 480px) {
+  /* Padding ainda menor */
+  .main-inner,
+  main {
+    padding: 12px 8px !important;
+  }
+  
+  /* Cards com padding mínimo */
+  .card,
+  [style*="padding"] {
+    padding: 12px !important;
+  }
+  
+  /* Títulos ainda menores */
+  h1 {
+    font-size: 18px !important;
+  }
+  
+  h2 {
+    font-size: 16px !important;
+  }
+  
+  h3 {
+    font-size: 14px !important;
+  }
+  
+  /* Texto bem pequeno */
+  p, div, span {
+    font-size: 13px !important;
+  }
+  
+  /* Botões compactos */
+  .btn, button {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+  
+  /* Vídeos menores */
+  iframe, video {
+    height: 200px !important;
+  }
+  
+  /* Gap mínimo */
+  [style*="gap"] {
+    gap: 12px !important;
+  }
+  
+  /* Topbar compacto */
+  .topbar-inner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+  
+  .nav {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  
+  .nav a {
+    font-size: 12px !important;
+    padding: 5px 8px !important;
+  }
+}
+
+/* Ajustes específicos para CursoView */
+@media (max-width: 968px) {
+  .curso-view-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Ajustes específicos para Catálogo */
+@media (max-width: 768px) {
+  [style*="gridTemplateColumns"][style*="repeat(auto-fill"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Força overflow scroll em containers pequenos */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto !important;
+  }
+  
+  table {
+    min-width: 600px !important;
+  }
+}

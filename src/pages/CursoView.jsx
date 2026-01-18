@@ -335,7 +335,7 @@ export default function CursoView() {
 
         {/* Conteúdo Principal */}
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 400px", gap: 30 }}>
+          <div className="curso-view-grid" style={{ display: "grid", gridTemplateColumns: "1fr 400px", gap: 30 }}>
             {/* Player de Vídeo */}
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <div style={{
@@ -541,6 +541,47 @@ export default function CursoView() {
           </div>
         </div>
       </main>
+
+      <style>{`
+        @media (max-width: 968px) {
+          .curso-view-grid {
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
+          }
+        }
+        
+        @media (max-width: 768px) {
+          main {
+            padding: 16px 12px !important;
+          }
+          
+          main iframe, main video {
+            height: 250px !important;
+          }
+          
+          .curso-view-grid > div:first-child > div {
+            padding: 20px !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          main {
+            padding: 12px 8px !important;
+          }
+          
+          main iframe, main video {
+            height: 200px !important;
+          }
+          
+          .curso-view-grid > div:first-child > div {
+            padding: 16px !important;
+          }
+          
+          .curso-view-grid > div:first-child > div h2 {
+            font-size: 18px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
