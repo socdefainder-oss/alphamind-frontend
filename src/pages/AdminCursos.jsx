@@ -13,6 +13,7 @@ function AdminCursos() {
   const [formData, setFormData] = useState({
     titulo: "",
     descricao: "",
+    thumbnail_url: "",
     preco_total: "",
     duracao_estimada_horas: 0,
     ativo: true
@@ -60,7 +61,7 @@ function AdminCursos() {
       
       setShowForm(false);
       setEditingId(null);
-      setFormData({ titulo: "", descricao: "", preco_total: "", duracao_estimada_horas: 0, ativo: true });
+      setFormData({ titulo: "", descricao: "", thumbnail_url: "", preco_total: "", duracao_estimada_horas: 0, ativo: true });
       loadCursos();
     } catch (error) {
       console.error("Erro ao salvar curso:", error);
@@ -72,6 +73,7 @@ function AdminCursos() {
     setFormData({
       titulo: curso.titulo,
       descricao: curso.descricao,
+      thumbnail_url: curso.thumbnail_url || "",
       preco_total: curso.preco_total,
       duracao_estimada_horas: curso.duracao_estimada_horas || 0,
       ativo: curso.ativo
@@ -163,6 +165,34 @@ function AdminCursos() {
                   />
                 </div>
 
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+                    URL da Imagem do Curso
+                    <span style={{ fontSize: "12px", color: "#888", marginLeft: "8px" }}>
+                      (opcional - Cole a URL completa da imagem)
+                    </span>
+                  </label>
+                  <input 
+                    type="url" 
+                    value={formData.thumbnail_url}
+                    onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
+                    placeholder="https://exemplo.com/imagem.jpg"
+                    style={{ width: "100%", padding: "12px", backgroundColor: "#2a2a2a", color: "#fff", border: "1px solid #444", borderRadius: "4px" }}
+                  />
+                  {formData.thumbnail_url && (
+                    <div style={{ marginTop: "10px", textAlign: "center" }}>
+                      <img 
+                        src={formData.thumbnail_url} 
+                        alt="Preview" 
+                        style={{ maxWidth: "200px", maxHeight: "150px", borderRadius: "8px", border: "2px solid #00d4ff" }}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
                   <div>
                     <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>Preço (R$) *</label>
@@ -219,7 +249,27 @@ function AdminCursos() {
           ) : (
             cursos.map((curso) => (
               <div key={curso.id} style={{ backgroundColor: "#1a1a1a", padding: "20px", borderRadius: "8px", border: "1px solid #333" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: "20px" }}>
+                  {/* Imagem do Curso */}
+                  {curso.thumbnail_url && (
+                    <div style={{ flexShrink: 0 }}>
+                      <img 
+                        src={curso.thumbnail_url} 
+                        alt={curso.titulo}
+                        style={{ 
+                          width: "150px", 
+                          height: "100px", 
+                          objectFit: "cover", 
+                          borderRadius: "8px",
+                          border: "2px solid #00d4ff"
+                        }}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    </div>
+                  )}
+                  
                   <div style={{ flex: 1 }}>
                     <h3 style={{ fontSize: "20px", marginBottom: "10px", color: "#00d4ff" }}>{curso.titulo}</h3>
                     <p style={{ color: "#aaa", marginBottom: "15px" }}>{curso.descricao}</p>
