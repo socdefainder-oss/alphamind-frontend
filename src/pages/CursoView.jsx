@@ -74,10 +74,22 @@ export default function CursoView() {
       // Detectar se é YouTube
       if (aulaAtual.video_url.includes("youtube.com") || aulaAtual.video_url.includes("youtu.be")) {
         let videoId = "";
+        
+        // Formato: https://www.youtube.com/watch?v=VIDEO_ID
         if (aulaAtual.video_url.includes("v=")) {
           videoId = aulaAtual.video_url.split("v=")[1].split("&")[0];
-        } else if (aulaAtual.video_url.includes("youtu.be/")) {
+        } 
+        // Formato: https://youtu.be/VIDEO_ID
+        else if (aulaAtual.video_url.includes("youtu.be/")) {
           videoId = aulaAtual.video_url.split("youtu.be/")[1].split("?")[0];
+        }
+        // Formato: https://www.youtube.com/live/VIDEO_ID
+        else if (aulaAtual.video_url.includes("/live/")) {
+          videoId = aulaAtual.video_url.split("/live/")[1].split("?")[0];
+        }
+        // Formato: https://www.youtube.com/embed/VIDEO_ID
+        else if (aulaAtual.video_url.includes("/embed/")) {
+          videoId = aulaAtual.video_url.split("/embed/")[1].split("?")[0];
         }
         
         console.log("URL original:", aulaAtual.video_url);
