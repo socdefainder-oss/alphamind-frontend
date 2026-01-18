@@ -8,6 +8,7 @@ import MeusCursos from "./pages/MeusCursos";
 import Provas from "./pages/Provas";
 import Avisos from "./pages/Avisos";
 import Perfil from "./pages/Perfil";
+import AdminCursos from "./pages/AdminCursos";
 
 function App() {
   return (
@@ -24,6 +25,9 @@ function App() {
         <Route path="/provas" element={<Provas />} />
         <Route path="/avisos" element={<Avisos />} />
         <Route path="/perfil" element={<Perfil />} />
+
+        {/* Admin */}
+        <Route path="/admin/cursos" element={<AdminCursos />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
