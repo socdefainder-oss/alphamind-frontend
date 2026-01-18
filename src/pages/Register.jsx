@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import "../App.css";
 
 function Register() {
+  const navigate = useNavigate();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -14,8 +16,8 @@ function Register() {
   useEffect(() => {
     // Se já tiver token, manda pro dashboard
     const token = localStorage.getItem("token");
-    if (token) window.location.href = "/dashboard";
-  }, []);
+    if (token) navigate("/dashboard");
+  }, [navigate]);
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -33,7 +35,7 @@ function Register() {
 
       // opcional: mandar direto pro login
       setTimeout(() => {
-        window.location.href = "/";
+        navigate("/");
       }, 800);
     } catch (err) {
       setErro("Não foi possível criar a conta. Verifique os dados e tente novamente.");
@@ -300,7 +302,7 @@ function Register() {
             >
               <button
                 type="button"
-                onClick={() => (window.location.href = "/")}
+                onClick={() => navigate("/")}
                 style={linkBtnStyle}
               >
                 Voltar para login

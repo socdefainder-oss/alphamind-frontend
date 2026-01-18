@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import "../App.css";
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
@@ -11,8 +13,8 @@ function Login() {
   useEffect(() => {
     // Se já tiver token, manda direto pro dashboard
     const token = localStorage.getItem("token");
-    if (token) window.location.href = "/dashboard";
-  }, []);
+    if (token) navigate("/dashboard");
+  }, [navigate]);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -22,7 +24,7 @@ function Login() {
     try {
       const res = await api.post("/login", { email, senha });
       localStorage.setItem("token", res.data.token);
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     } catch (err) {
       // Tratamento mais específico de erros
       if (err.response) {

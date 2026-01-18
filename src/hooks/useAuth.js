@@ -5,7 +5,7 @@ import api from "../services/api";
  * Hook para validar se o usuário está autenticado
  * Faz uma chamada real ao backend para verificar se o token é válido
  */
-export function useAuth() {
+function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -50,3 +50,5 @@ export function useAuth() {
 
   return { isAuthenticated, isLoading, user };
 }
+
+export default useAuth;

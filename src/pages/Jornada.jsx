@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 import "../App.css";
 
 function Jornada() {
