@@ -13,8 +13,8 @@ function AdminCursos() {
   const [formData, setFormData] = useState({
     titulo: "",
     descricao: "",
-    preco: "",
-    duracao_meses: 12,
+    preco_total: "",
+    duracao_estimada_horas: 0,
     ativo: true
   });
 
@@ -60,7 +60,7 @@ function AdminCursos() {
       
       setShowForm(false);
       setEditingId(null);
-      setFormData({ titulo: "", descricao: "", preco: "", duracao_meses: 12, ativo: true });
+      setFormData({ titulo: "", descricao: "", preco_total: "", duracao_estimada_horas: 0, ativo: true });
       loadCursos();
     } catch (error) {
       console.error("Erro ao salvar curso:", error);
@@ -72,8 +72,8 @@ function AdminCursos() {
     setFormData({
       titulo: curso.titulo,
       descricao: curso.descricao,
-      preco: curso.preco_total,
-      duracao_meses: curso.duracao_estimada_horas / 10 || 12,
+      preco_total: curso.preco_total,
+      duracao_estimada_horas: curso.duracao_estimada_horas || 0,
       ativo: curso.ativo
     });
     setEditingId(curso.id);
@@ -169,19 +169,19 @@ function AdminCursos() {
                     <input 
                       type="number" 
                       step="0.01"
-                      value={formData.preco}
-                      onChange={(e) => setFormData({ ...formData, preco: e.target.value })}
+                      value={formData.preco_total}
+                      onChange={(e) => setFormData({ ...formData, preco_total: e.target.value })}
                       required
                       style={{ width: "100%", padding: "12px", backgroundColor: "#2a2a2a", color: "#fff", border: "1px solid #444", borderRadius: "4px" }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>Duração (meses)</label>
+                    <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>Duração Estimada (horas)</label>
                     <input 
                       type="number"
-                      value={formData.duracao_meses}
-                      onChange={(e) => setFormData({ ...formData, duracao_meses: e.target.value })}
+                      value={formData.duracao_estimada_horas}
+                      onChange={(e) => setFormData({ ...formData, duracao_estimada_horas: e.target.value })}
                       style={{ width: "100%", padding: "12px", backgroundColor: "#2a2a2a", color: "#fff", border: "1px solid #444", borderRadius: "4px" }}
                     />
                   </div>
