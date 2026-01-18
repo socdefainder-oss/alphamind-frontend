@@ -11,9 +11,24 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Se já tiver token, manda direto pro dashboard
-    const token = localStorage.getItem("token");
-    if (token) navigate("/dashboard");
+    // Se já tiver token, verifica role e redireciona
+    async function checkToken() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const userRes = await api.get("/me");
+          if (userRes.data.role === "admin") {
+            navigate("/admin/cursos");
+          } else {
+            navigate("/dashboard");
+          }
+        } catch {
+          // Token inválido, fica na página de login
+          localStorage.removeItem("token");
+        }
+      }
+    }
+    checkToken();
   }, [navigate]);
 
   async function handleLogin(e) {
@@ -24,7 +39,16 @@ function Login() {
     try {
       const res = await api.post("/login", { email, senha });
       localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+      
+      // Buscar dados do usuário para verificar role
+      const userRes = await api.get("/me");
+      
+      // Redirecionar baseado no role
+      if (userRes.data.role === "admin") {
+        navigate("/admin/cursos");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       // Tratamento mais específico de erros
       if (err.response) {
