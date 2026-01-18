@@ -80,6 +80,26 @@ export default function CursoView() {
           videoId = aulaAtual.video_url.split("youtu.be/")[1].split("?")[0];
         }
         
+        console.log("URL original:", aulaAtual.video_url);
+        console.log("Video ID extraído:", videoId);
+        
+        if (!videoId) {
+          return (
+            <div style={{
+              background: "#fff",
+              padding: "30px",
+              borderRadius: "12px",
+              textAlign: "center",
+              color: "#dc2626"
+            }}>
+              <p>Erro: URL do YouTube inválida. Por favor, verifique o link do vídeo.</p>
+              <p style={{ fontSize: "12px", color: "#64748b", marginTop: "10px" }}>
+                URL fornecida: {aulaAtual.video_url}
+              </p>
+            </div>
+          );
+        }
+        
         return (
           <iframe
             width="100%"
