@@ -17,9 +17,11 @@ function MeusCursos() {
   async function loadMeusCursos() {
     try {
       const response = await api.get("/api/aluno/minhas-matriculas");
+      console.log("Cursos recebidos:", response.data);
       setCursos(response.data);
     } catch (error) {
       console.error("Erro ao carregar cursos:", error);
+      console.error("Detalhes do erro:", error.response?.data);
     } finally {
       setLoading(false);
     }
